@@ -1,0 +1,97 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+.profile-wrapper{
+    width: 100%;
+    height: 100vh;
+}
+.profile-container{
+    width: 100%;
+    display: flex;
+    /* align-items: center;
+    justify-content: flex-start; */
+    gap: 40px;
+    padding-top: 125px;
+    margin: 0px 30px;
+}
+.profile-name{
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 25px;
+}
+.profile-user{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #8a8686;
+}
+.profile-icon-user{
+    font-size: 100px;
+    margin-bottom: 12px;
+}
+.profile-btn{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.profile-btn button{
+    padding: 7px 8px;
+    border: 1px solid #d6d3d3;
+    border-radius: 5px;
+    font-weight: bold;
+    display: flex;
+    font-size: 16px;
+}
+.profile-btn button:hover{
+    background-color: orangered;
+    color: white;
+}
+.profile-login{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.logout-section{
+    width: 100%;
+}
+.logout-section h3{
+    width: 91%;
+    font-size: 31px;
+    font-weight: 900;
+    color: orange;
+}
+.logout-section button{
+    width: 91%;
+    margin-top: 15px;
+    padding: 8px 0px;
+    background-color: orangered;
+    border: none;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+.logout-section p{
+    text-align: center;
+    margin-top: 15px;
+    font-size: 21px;
+}
+@media screen and (max-width:1050px){
+    .profile-container{
+        width: 100%;
+        flex-direction: column;
+        margin: auto;
+        align-items: center;
+    }
+    .login-form{
+        margin-top: 0px;
+        margin-bottom: 20px;
+    }
+}

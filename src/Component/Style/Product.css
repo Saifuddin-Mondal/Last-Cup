@@ -1,0 +1,52 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+.menu-bar{
+    padding-top: 110px;
+    gap: 10px;
+    padding-top: 111px;
+    display: flex;
+    align-items: center;
+}
+.menu-bar p{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.menu-bar-link{
+    text-decoration: none;
+}
+.menu-text{
+    cursor: not-allowed;
+}
+.Product-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+    background-color: #d6d5d4;
+    height: 100vh;
+}
+.product-section{
+    width: 100%;
+}
+
+.Product-container {
+    width: 75%;
+    margin: auto;
+}
+.veg-nonveg-btn{
+    margin-top: 21px;
+}
+.Product-all-container{
+    width: auto;
+    display: flex;
+    margin-top: 31px;
+    /* grid-template-columns: repeat(4, 1fr); */
+    flex-wrap: wrap;
+}
+.product-one-container{
+    width: auto;
+    padding: 0px 15px 0px 0px;
+}
