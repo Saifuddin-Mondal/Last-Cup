@@ -94,8 +94,13 @@ const Cart = () => {
     
       useEffect(() => {
         console.log("fetch data");
-        fetchCartData();
-      }, []);
+          if (!userId) {
+              setCartData([]);  // Clear cart data if user is logged out
+          } else {
+            console.log("already login: ",userId);
+              fetchCartData();  // Fetch cart data if user is logged in
+          }
+      }, [userId]); 
 
     const total = useMemo(() => {
         return cartData.reduce((total, item) => total + (item.prod_price * item.qty), 0);
