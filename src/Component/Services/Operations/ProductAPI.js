@@ -1,5 +1,5 @@
 import api from "../api";
-import { product_endpoint, resturent_endpoint, popular_endpoint, register_endpoint, login_endpoint, cart_endpoint, update_profile_endpoint,check_endpoint } from '../api_endpoints'
+import { product_endpoint, resturent_endpoint, popular_endpoint, register_endpoint, login_endpoint, cart_endpoint, update_profile_endpoint,check_endpoint,history_endpoint } from '../api_endpoints'
 const { PRODUCT_API, Particular_API } = product_endpoint;
 const { DATA_API } = resturent_endpoint
 const { Popular_API } = popular_endpoint
@@ -8,6 +8,7 @@ const { login_API } = login_endpoint
 const { cart_add_API, cart_update_API } = cart_endpoint
 const { update_profile_API, get_profile_API } = update_profile_endpoint;
 const {checkout_API}=check_endpoint;
+const {history_API}=history_endpoint;
 
 export const fetchProduct = async () => {
     let result = [];
@@ -154,7 +155,7 @@ export const get_profile = async (user) => {
     try {
         console.log(user)
         const user_id=user.user_id
-;        console.log("Rana", user)
+        console.log("Rana", user);
         const response = await api.get(`${get_profile_API}?user_id=${user_id}`);
         console.log("Rana", user)
         return response;
@@ -169,6 +170,19 @@ export const get_checkout = async (data) => {
 ;       console.log("Rana",data)
         const response = await api.post(checkout_API,data);
         console.log("Rana",response)
+        return response;
+    }
+    catch (error) {
+        console.log("GET_update_profile_API_ERROR..........");
+    }
+}
+export const get_order_history = async (user) => {
+    try {
+        console.log(user)
+        const user_id=user.user_id
+        console.log("order_history", user);
+        const response = await api.get(`${history_API}?user_id=${user_id}`);
+        console.log("Rana", user)
         return response;
     }
     catch (error) {

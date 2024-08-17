@@ -4,24 +4,29 @@ import { FaAngleRight } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import {addOrder, removeOrder, loadOrder } from '../Redux/Cart-system';
 import Cookies from "js-cookie"
+import { useNavigate } from 'react-router-dom';
 import '../Style/Product.css'
 import { Link } from 'react-router-dom'
 import veg from '../../assets/1531813273.png'
 import nonveg from '../../assets/1531813245.png'
 import { fetchParticularProduct} from '../Services/Operations/ProductAPI'
 import { useLocation } from 'react-router-dom';
-import { cart_data,cart_update } from "../Services/Operations/ProductAPI";
+import { cart_data,cart_update,getCart_data,cart_delete } from "../Services/Operations/ProductAPI";
 
 const Product = () => {
     const location = useLocation();
+    const navigate=useNavigate();
     // console.log("fsdgkjfljdkohksdkljklsddjfodsjgio",location)
     const searchParams = new URLSearchParams(location.search);
     // console.log("Actual",searchParams)
     const categoryId = searchParams.get('Id');
     const {orderState,totalItem} = useSelector((state) => state.cart);
+    const {loginData} =useSelector((state)=>state.user);
 
     const [response2, setResponse2] = useState([])
     const [itemType, setItemType] = useState('');
+    const [popular_qty, setPopular_qty] = useState([])
+    const { userId } = useSelector((state) => state.user);
 
     useEffect(() => {
         const loadProduct1 = async () => {
@@ -47,74 +52,181 @@ const Product = () => {
         loadProduct1();
     },[])
 
+    useEffect(() => {
+        const fetchCartData = async () => {
+            try {
+                const user_id = userId.user_id;
+                const response = await getCart_data(user_id);
+                console.log("Cart Data in popular section", response.data.data);
+                setPopular_qty(response.data.data);
+            }
+            catch (error) {
+                console.error("Error fetching cart:", error);
+            }
+        };
+        fetchCartData();
+    }, []);
+
+    const fetchCartData1 = async () => {
+        try {
+            const user_id = userId.user_id;
+            const response = await getCart_data(user_id);
+            console.log("Cart Data in popular section", response.data.data);
+            setPopular_qty(response.data.data);
+        }
+        catch (error) {
+            console.error("Error fetching cart:", error);
+        }
+    };
+
 
     const { cart } = useSelector((item) => item.cart);
     console.log(cart);
     const dispatch = useDispatch();
 
+    const getItemQuantity = (item) => {
+        console.log("item", item);
+        const qty_value = popular_qty;
+        const cartItem = qty_value.find(cart => String(cart.prod_id) === String(item.id));
+        console.log("matched:", cartItem);
+        if (cartItem) {
+            console.log("match prod_id");
+            return cartItem.qty;
+        } else {
+            return 0;
+        }
+    };
+
     // const getItemQuantity = (itemId) => {
     //     const item = cart.find((item) => item.id === itemId);
 
     // };
-    const getItemQuantity = (itemId) => {
-        const item = cart.find((item) => item.id === itemId);
-        return item ? item.quantity : 0;
-    };
-    const handleOrder = async(id, item) => {
+    // const getItemQuantity = (itemId) => {
+    //     const item = cart.find((item) => item.id === itemId);
+    //     return item ? item.quantity : 0;
+    // };
+    // const handleOrder = async(id, item) => {
+    //     if (!orderState.some(cartItem => cartItem.id === item.id)) {
+    //        try{
+    //         const itemWithQuantity = { ...item, qty: 1 };
+    //         const response = await cart_data(itemWithQuantity);
+    //         console.log("........response",response)
+    //         console.log("........itemWithQuantity",itemWithQuantity)
+
+    //         if(response.data.status === "success"){
+    //             console.log("id add",id)
+    //             dispatch(addOrder({ id }));
+    //         }
+    //        }
+    //        catch(error){
+    //         console.log("error")
+    //        }
+    //     }
+
+    // }
+    const handleOrder = async (id, item) => {
+        if(!loginData){
+            navigate("/login");
+        }
         if (!orderState.some(cartItem => cartItem.id === item.id)) {
-           try{
-            const itemWithQuantity = { ...item, qty: 1 };
-            const response = await cart_data(itemWithQuantity);
-            console.log("........response",response)
-            console.log("........itemWithQuantity",itemWithQuantity)
+            try {
+                const user_id = userId.user_id;
+                const itemWithQuantity = { ...item, qty: 1, user_id };
+                const response = await cart_data(itemWithQuantity);
+                console.log("........response", response)
+                console.log("........itemWithQuantity", itemWithQuantity)
 
-            if(response.data.status === "success"){
-                console.log("id add",id)
-                dispatch(addOrder({ id }));
+                if (response.data.status === "success") {
+                    console.log("id add", id)
+                    dispatch(addOrder({ id }));
+                    fetchCartData1();
+                }
             }
-           }
-           catch(error){
-            console.log("error")
-           }
+            catch (error) {
+                console.log("error")
+            }
         }
 
     }
-    const handleCountNegative = async(item) => {
-        // const quant = getItemQuantity(item.id);
-        var quant;
-        if (quant <= 1) {
-            // quant=quant-1;
-            dispatch(removeOrder(item.id));
-            // dispatch(removeFromCart(item))
-            totalItem--;
-        }
-        else {
-            quant=quant-1;
-            try{
-                const response=await cart_update(item.id,quant,item.banner_image);
-            console.log(response);
-            // dispatch(Decrement(item))
-            }
-            catch(error){
-                console.error("Error updating cart:", error);
-            }
-        }
-    }
+    const handleCountNegative = async (item) => {
+        const user_id = userId.user_id;
 
-    const handleCountPositive = async(item) => {
-        // let quant = getItemQuantity(item.id);
-        var quant;
-        quant=quant+1;
-        try{
-            console.log("........GiSalmon........")
-            const response=await cart_update(item.id,quant,item.banner_image);
-            console.log("........GiSalmon........")
-            console.log(response);
-        }
-        catch(error){
+        try {
+            const response = await getCart_data(user_id);
+            console.log("count positive1 : ", response);
 
+            const cartItems = response.data.data;
+
+            const cartItem = cartItems.find(cart => String(cart.prod_id) === String(item.id));
+            console.log("matched1:", cartItem);
+
+            if (cartItem) {
+                let quant = cartItem.qty - 1;
+                if (quant <= 0) {
+                    // console.log("quantity : ",quant);
+                    // console.log(item);
+                    // const id = item.id;
+                    // console.log("id : ",id);
+                    // // const updateResponse = await cart_update(user_id, item.id, quant, item.prod_price);
+                    // const updateResponse=await cart_delete(id);
+                    // console.log("Count positive response : ", updateResponse);
+                    // if (updateResponse.data.status === "success") {
+                    //     // const response = await getCart_data(user_id);
+                    //     dispatch(removeOrder({ id }));
+                    //     fetchCartData1();
+                    // }
+                    const response = await cart_delete(cartItem.id);
+                    const id = cartItem.prod_id;
+                    dispatch(removeOrder({ id }));
+                }
+                else {
+                    console.log(quant);
+
+                    const updateResponse = await cart_update(user_id, item.id, quant, item.prod_price);
+                    console.log("Count positive response : ", updateResponse);
+                    if (updateResponse.data.status === "success") {
+                        // const response = await getCart_data(user_id);
+                        fetchCartData1();
+                    }
+                }
+            } else {
+                console.log("Item not found in cart.");
+            }
+        } catch (error) {
+            console.error("Error updating cart:", error);
         }
-    }
+    };
+
+    const handleCountPositive = async (item) => {
+        const user_id = userId.user_id;
+
+        try {
+            const response = await getCart_data(user_id);
+            console.log("count positive1 : ", response);
+
+            const cartItems = response.data.data;
+
+            const cartItem = cartItems.find(cart => String(cart.prod_id) === String(item.id));
+            console.log("matched1:", cartItem);
+
+            if (cartItem) {
+                let quant = cartItem.qty + 1;
+                console.log(quant);
+
+                const updateResponse = await cart_update(user_id, item.id, quant, item.prod_price);
+                console.log("Count positive response : ", updateResponse);
+                if (updateResponse.data.status === "success") {
+                    // const response = await getCart_data(user_id);
+                    fetchCartData1();
+                }
+            } else {
+                console.log("Item not found in cart.");
+            }
+        } catch (error) {
+            console.error("Error updating cart:", error);
+        }
+    };
+
     useEffect(() => {
         const savedOrder = Cookies.get('orderState');
         if (savedOrder) {
@@ -158,7 +270,7 @@ const Product = () => {
                                     <span className='section2-span-rs'>₹{item.prod_price}</span>
                                     {!orderState.find(cartItem => cartItem.id === item.id) ? <button className='section2-one-btn' onClick={() => handleOrder(item.id, item)}>Order Now</button> : <div className='section-btn'>
                                             <button className='section-add-sub' onClick={() => handleCountNegative(item)}>-</button>
-                                            {/* <span>{getItemQuantity(item.id)}</span> */}
+                                            <span>{getItemQuantity(item)}</span>
                                         <span>{item.qty}</span>
                                             <button className='section-add-sub' onClick={() => handleCountPositive(item)}>+</button>
                                         </div>

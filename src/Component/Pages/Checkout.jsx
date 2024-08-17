@@ -77,8 +77,10 @@ const Checkout = () => {
         <div className='profile-wrapper'>
             {
                 loading ? <div className='Loading-section'>
-                    <Commet color="#32cd32" size="medium" text="" textColor="" />
-                    <p>Loading....</p>
+                    <div className='commet-container'>
+                        <Commet color="#32cd32" size="medium" text="" textColor="" />
+                        <p>Loading....</p>
+                    </div>
                 </div> :
                     <div className={`profile-section ${order ? "profile-active" : ""}`}>
                         <div className='profile-container checkout-container'>

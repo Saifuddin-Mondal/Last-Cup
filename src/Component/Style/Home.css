@@ -738,6 +738,11 @@
     flex-direction: column;
     z-index: 1000;;
 }
+.commet-container{
+    background-color: #dbefc9;
+    text-align: center;
+    padding: 16px;
+}
 
 
 @media screen and (max-width:1235px) {
@@ -748,12 +753,12 @@
     } */
 
     .home-background-color {
-        bottom: 100px;
+        bottom: 79px;
         left: 10px;
     }
 
     .home-item-off {
-        bottom: 130px;
+        bottom: 110px;
         left: 41px;
     }
 

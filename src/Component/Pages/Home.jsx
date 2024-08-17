@@ -17,9 +17,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrder, removeOrder, loadOrder } from '../Redux/Cart-system';
 import Cookies from "js-cookie"
-import { fetchProduct } from '../Services/Operations/ProductAPI';
+import { cart_delete, fetchProduct } from '../Services/Operations/ProductAPI';
 import { fetchResturentProduct, fetchPopularProduct } from '../Services/Operations/ProductAPI';
 import { cart_data, cart_update, getCart_data } from "../Services/Operations/ProductAPI";
+
 import { Commet } from 'react-loading-indicators';
 
 
@@ -143,6 +144,7 @@ const Home = () => {
 
 
     const { orderState, totalItem } = useSelector((state) => state.cart);
+    const {loginData} =useSelector((state)=>state.user);
     const dispatch = useDispatch();
     // const [order, setOrder] = useState({});
 
@@ -152,6 +154,9 @@ const Home = () => {
     // };
 
     const handleOrder = async (id, item) => {
+        if(!loginData){
+            navigate("/login");
+        }
         if (!orderState.some(cartItem => cartItem.id === item.id)) {
             try {
                 const user_id = userId.user_id;
@@ -243,13 +248,32 @@ const Home = () => {
 
             if (cartItem) {
                 let quant = cartItem.qty - 1;
-                console.log(quant);
+                if (quant <= 0) {
+                    // console.log("quantity : ",quant);
+                    // console.log(item);
+                    // const id = item.id;
+                    // console.log("id : ",id);
+                    // // const updateResponse = await cart_update(user_id, item.id, quant, item.prod_price);
+                    // const updateResponse=await cart_delete(id);
+                    // console.log("Count positive response : ", updateResponse);
+                    // if (updateResponse.data.status === "success") {
+                    //     // const response = await getCart_data(user_id);
+                    //     dispatch(removeOrder({ id }));
+                    //     fetchCartData1();
+                    // }
+                    const response = await cart_delete(cartItem.id);
+                    const id = cartItem.prod_id;
+                    dispatch(removeOrder({ id }));
+                }
+                else {
+                    console.log(quant);
 
-                const updateResponse = await cart_update(user_id, item.id, quant, item.prod_price);
-                console.log("Count positive response : ", updateResponse);
-                if (updateResponse.data.status === "success") {
-                    // const response = await getCart_data(user_id);
-                    fetchCartData1();
+                    const updateResponse = await cart_update(user_id, item.id, quant, item.prod_price);
+                    console.log("Count positive response : ", updateResponse);
+                    if (updateResponse.data.status === "success") {
+                        // const response = await getCart_data(user_id);
+                        fetchCartData1();
+                    }
                 }
             } else {
                 console.log("Item not found in cart.");
@@ -371,8 +395,10 @@ const Home = () => {
         <>
             {
                 loading ? <div className='Loading-section1'>
-                    <Commet color="#32cd32" size="medium" text="" textColor="" />
-                    <p>Loading....</p>
+                    <div className='commet-container'>
+                        <Commet color="#32cd32" size="medium" text="" textColor="" />
+                        <p>Loading....</p>
+                    </div>
                 </div> :
                     <div className='home-all-wrapper'>
 

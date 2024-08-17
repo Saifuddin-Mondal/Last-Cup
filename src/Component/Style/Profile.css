@@ -83,6 +83,9 @@
     margin-top: 15px;
     font-size: 21px;
 }
+.profile-header1 {
+    width: 100% !important;
+}
 @media screen and (max-width:1050px){
     .profile-container{
         width: 100%;
@@ -93,5 +96,11 @@
     .login-form{
         margin-top: 0px;
         margin-bottom: 20px;
+    }
+}
+@media screen and (max-width:490px){
+    .order-data{
+        display: block;
+        margin-top: 5px;
     }
 }

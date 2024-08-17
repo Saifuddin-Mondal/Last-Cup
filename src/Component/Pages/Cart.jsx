@@ -12,113 +12,6 @@ const Cart = () => {
     const { orderState } = useSelector((state) => state.cart);
     const {userId} =useSelector((state)=>state.user);
     const dispatch = useDispatch();
-    // const getItemQuantity = (itemId) => {
-    //     const item = cart.find((item) => item.id === itemId);
-    //     return item ? item.quantity : 0;
-    // };
-    // const handleCountNegative = async (item) => {
-    //     let quant = item.qty;
-    //     if (quant <= 1) {
-    //         // quant=quant-1;
-    //         console.log("sai.....fu", item.prod_id);
-    //         const id = item.prod_id;
-    //         dispatch(removeOrder({ id }));
-    //         // dispatch(removeFromCart(item))
-    //         try {
-    //             const response = await cart_delete(item.id);
-    //             console.log("count1 to remove", response);
-    //             if (response.data.status === 'success') {
-    //                 const result = await getCart_data();
-    //                 console.log("get data : ", result);
-    //                 setCartData(result.data.data);
-    //                 dispatch(addCart(result.data.data));
-    //             }
-    //             // setCartData(prevCartData => prevCartData.filter(cartItem => cartItem.id !== item.id));
-
-    //         }
-    //         catch (error) {
-    //             console.error("Error delete cart:", error);
-    //         }
-    //     }
-    //     else {
-    //         quant = quant - 1;
-    //         try {
-    //             console.log("item quqntity", quant)
-    //             const response = await cart_update(item.id, quant, item.banner_image);
-    //             console.log(response);
-    //             if (response.data.status === 'success') {
-    //                 // setCartData(prevCartData =>
-    //                 //     prevCartData.map(cartItem =>
-    //                 //         cartItem.id === item.id ? { ...cartItem, qty: quant } : cartItem
-    //                 //     )
-    //                 // );
-
-    //                 const result = await getCart_data();
-    //                 console.log("get data : ", result);
-    //                 setCartData(result.data.data);
-    //                 dispatch(addCart(result.data.data));
-    //             }
-    //         }
-    //         catch (error) {
-    //             console.error("Error updating cart:", error);
-    //         }
-    //     }
-    // }
-
-    // const handleCountPositive = async (item) => {
-    //     try {
-    //         let quant = item.qty + 1;
-    //         console.log("item quqntity", quant)
-    //         const response = await cart_update(item.id, quant, item.banner_image);
-    //         if (response.data.status === 'success') {
-    //             // setCartData(prevCartData =>
-    //             //     prevCartData.map(cartItem =>
-    //             //         cartItem.id === item.id ? { ...cartItem, qty: quant } : cartItem
-    //             //     )
-    //             // );
-    //             const result = await getCart_data();
-    //             console.log("get data : ", result);
-    //             setCartData(result.data.data);
-    //             dispatch(addCart(result.data.data));
-
-    //         }
-    //         console.log("........GiSalmon........")
-    //         console.log(response);
-    //     }
-    //     catch (error) {
-
-    //     }
-    // }
-    // const handleRemove = async (item) => {
-    //     try {
-    //         const response = await cart_delete(item.id);
-    //         const id = item.prod_id;
-    //         dispatch(removeOrder({ id }));
-    //         setCartData(prevCartData => prevCartData.filter(cartItem => cartItem.id !== item.id));
-    //         // dispatch(removeCart({id}));
-    //     }
-    //     catch (error) {
-    //         console.error("Error delete cart:", error);
-    //     }
-    // }
-
-    // useEffect(() => {
-
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await getCart_data();
-    //             console.log("saig......", response)
-    //             setCartData(response.data.data);
-    //             dispatch(addCart(response.data.data));
-    //         }
-    //         catch (error) {
-    //             console.error("Error all cart:", error);
-    //         }
-    //     }
-
-
-    //     fetchData();
-    // }, [])
 
     const fetchCartData = async () => {
         try {
@@ -188,6 +81,16 @@ const Cart = () => {
           console.error("Error deleting cart item:", error);
         }
       };
+
+    //   const handleCheckout = () => {
+    //     if (loginData) {
+    //         navigate("/checkout");
+    //     } 
+    //     else {
+    //         navigate("/login");
+    //     }
+    // }
+    
     
       useEffect(() => {
         console.log("fetch data");
@@ -234,7 +137,7 @@ const Cart = () => {
                     <p className='ps'>Total Price : <span>{total}</span></p>
                     <p className='ps'>Delivery Charges : <span>{total > 0 ? 40 : 0}</span></p>
                     <p className='cart-total-amount ps'>Payable Amount : <span>{total + (total > 0 ? 40 : 0)}</span></p>
-                    <Link to="/checkout" className='cart-total-link'><button>Proceed to Pay</button></Link>
+                    <Link to="/checkout"><div className='cart-total-link'><button>Proceed to Pay</button></div></Link>
                 </div>
             </div>
         </div>

@@ -41,3 +41,8 @@ export const update_profile_endpoint={
 export const check_endpoint={
     checkout_API:baseURL+"/checkout",
 }
+
+//order history endpoint
+export const history_endpoint={
+    history_API:baseURL+"/orderHistory",
+}

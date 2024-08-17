@@ -3,13 +3,14 @@ import { FaUserAlt } from "react-icons/fa";
 // import { Link } from "react-router-dom"
 import "../Style/login.css"
 import "../Style/Profile.css"
+import "../Style/Checkout.css";
 import Navbar from '../Core/Navbar'
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { logout } from '../Redux/user_information';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { update_profile,get_profile } from '../Services/Operations/ProductAPI';
+import { update_profile, get_profile, get_order_history } from '../Services/Operations/ProductAPI';
 import { toast } from 'react-toastify';
 import { setSignupData } from '../Redux/user_information';
 import { logout_Cart } from '../Redux/Cart-system';
@@ -18,10 +19,11 @@ const Profile = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { userId } = useSelector((state) => state.user);
-    const [profileImage,setProfileImage]=useState(null);
+    const [profileImage, setProfileImage] = useState(null);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [logoutProfile, setLogout] = useState(false);
     const [profile, setProfile] = useState(true);
+    const [history, setHistory] = useState();
     const [order, setOrder] = useState(false);
     const { signupData } = useSelector((state) => state.user);
 
@@ -66,9 +68,9 @@ const Profile = () => {
             const response = await update_profile(formData);
 
             if (response.status === 200) {
-                const response=await get_profile(userId);
-                console.log("profile data",response.data.data);
-                if(response.status===200){
+                const response = await get_profile(userId);
+                console.log("profile data", response.data.data);
+                if (response.status === 200) {
                     console.log("don")
                     dispatch(setSignupData(response.data.data));
                     setProfileImage(response.data.data.profile_image)
@@ -98,27 +100,31 @@ const Profile = () => {
         handleProfileUpdate(data);
     }
 
-    useEffect(()=>{
-        const userProfile=(async()=>{
-            try{
-                console.log("userId",userId);
-                const response=await get_profile(userId);
-                console.log("profile data",response.data.data);
-                if(response.status===200){
+    useEffect(() => {
+        const userProfile = (async () => {
+            try {
+                console.log("userId", userId);
+                const response = await get_profile(userId);
+                const response1 = await get_order_history(userId);
+                console.log("order data : ", response1);
+                console.log("profile data", response.data.data);
+                if (response.status === 200 && response1.data.status === "success") {
                     console.log("don")
+                    console.log("order history response : ", response1.data.data);
+                    setHistory(response1.data.data);
                     dispatch(setSignupData(response.data.data));
                     setProfileImage(response.data.data.profile_image)
                     console.log("don1");
                 }
             }
-            catch(error){
+            catch (error) {
                 console.error("Error get profile:", error);
             }
         })
         userProfile();
-    },[])
+    }, [])
 
-    console.log("signup data : ",signupData)
+    console.log("signup data : ", signupData)
     // console.log("profile_image : ",profileImage)
 
     return (
@@ -220,10 +226,28 @@ const Profile = () => {
                             </div>
                             <button type='submit' className='form-btn'>Save</button>
                         </form>
-                        : order ? <div className='logout-section'>
-                            <h3>No History Available</h3>
-                            <p>Go Back</p>
-                        </div>
+                        : order ?
+                            <div className='profile-header profile-header1 cart-header cart-item-header'>
+                                <div className='cart-slider-list'>
+                                    {
+                                        history.map((item, id) => (
+                                            <div className='cart-item' key={id}>
+                                                <img src={item.banner_image} alt={`${item.title}`} />
+                                                <div className='cart-ruppes-button checkout-btn-rupees'>
+                                                    {/* <p className='cart-ruppes-button1'>{item.text1}</p> */}
+                                                    <p className='rupees'>Price : ₹{item.prod_price}</p>
+                                                    <p className='rupees'>Qty : {item.qty}</p>
+                                                    <p className='rupees'>Order Date : <span className='order-data'>{item.order_date}</span></p>
+                                                </div>
+                                                <div className='cart-remove-btn'>
+                                                    <p className='rupees'>Total : ₹{item.total_price}</p>
+                                                    {/* <button className='big-btn btn-remove' onClick={() => Dispatch(removeFromCart(item))} type='submit'>Remove</button> */}
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
                             : logoutProfile ? <div className='logout-section'>
                                 <h3>Do you want to log out?</h3>
                                 <button onClick={handleLogOutfromLogin}>Log Out</button>

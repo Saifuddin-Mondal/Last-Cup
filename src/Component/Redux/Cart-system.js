@@ -5,7 +5,7 @@ import Cookies from "js-cookie"
 const initialState = {
     orderState: Cookies.get('orderState') ? JSON.parse(Cookies.get('orderState')) : [],
     All_cart: Cookies.get('All_cart') ? JSON.parse(Cookies.get('All_cart')) : [],
-    totalItem: localStorage.getItem('totalItem') ? localStorage.getItem('totalItem') : 0,
+    totalItem: Cookies.get('totalItem') ? Cookies.get('totalItem') : 0,
     total: Cookies.get('total') ? JSON.parse(Cookies.get('total')) : 0,
 }
 
@@ -34,7 +34,7 @@ export const Cart_system = createSlice({
             console.log("state.orderstate : ",state.orderState);
 
             Cookies.set('orderState', JSON.stringify(state.orderState));
-            localStorage.setItem('totalItem', state.totalItem);
+            Cookies.set('totalItem', state.totalItem);
         },
         removeOrder: (state, action) => {
             const {id} = action.payload;
@@ -47,7 +47,7 @@ export const Cart_system = createSlice({
             state.totalItem--;
             console.log("state.orderstate : ",state.orderState);
             Cookies.set('orderState', JSON.stringify(state.orderState));
-            localStorage.setItem('totalItem', state.totalItem);
+            Cookies.set('totalItem', state.totalItem);
         },
         loadOrder: (state, action) => {
             const payload = action.payload;
@@ -69,7 +69,7 @@ export const Cart_system = createSlice({
 
             Cookies.set('All_cart', JSON.stringify(state.All_cart));
             Cookies.set('orderState', JSON.stringify(state.orderState));
-            localStorage.setItem('totalItem', state.totalItem);
+            Cookies.set('totalItem', state.totalItem);
             Cookies.set('total', JSON.stringify(state.total));
         },
     },

@@ -20,6 +20,7 @@ export const user_information = createSlice({
             Cookies.remove('loginData');
             // localStorage.removeItem("signupData");
             localStorage.removeItem("userId");
+            localStorage.removeItem("signupData");
             // localStorage.clear();
         },
         setLoginData(state, action) {
